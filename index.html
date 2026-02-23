@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkyPulse – Weather Forecast</title>
+  <meta name="description" content="Real-time weather forecasts for any city worldwide. Search your city to get current conditions and a 7-day forecast." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Animated background blobs -->
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">🌤️</span>
+        <span class="logo-text">SkyPulse</span>
+      </div>
+      <p class="tagline">Real-time weather, anywhere on Earth</p>
+    </header>
+
+    <!-- Search -->
+    <div class="search-wrapper">
+      <div class="search-box" id="searchBox">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          id="cityInput"
+          placeholder="Search for a city…"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="City name"
+        />
+        <button id="searchBtn" aria-label="Search weather">
+          <span>Search</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+      <!-- Autocomplete dropdown -->
+      <ul class="suggestions" id="suggestions" role="listbox" aria-label="City suggestions"></ul>
+    </div>
+
+    <!-- Loading spinner -->
+    <div class="loader hidden" id="loader">
+      <div class="spinner"></div>
+      <p>Fetching weather data…</p>
+    </div>
+
+    <!-- Error message -->
+    <div class="error-card hidden" id="errorCard">
+      <span class="error-icon">⚠️</span>
+      <p id="errorMsg">City not found. Please try again.</p>
+    </div>
+
+    <!-- Main weather card -->
+    <div class="weather-section hidden" id="weatherSection">
+
+      <!-- Current weather -->
+      <div class="current-card" id="currentCard">
+        <div class="current-top">
+          <div class="city-info">
+            <h1 class="city-name" id="cityName">–</h1>
+            <p class="country" id="country">–</p>
+            <p class="date-time" id="dateTime">–</p>
+          </div>
+          <div class="weather-icon-wrap">
+            <div class="weather-icon" id="currentIcon">☀️</div>
+            <p class="weather-desc" id="currentDesc">–</p>
+          </div>
+        </div>
+
+        <div class="temp-display">
+          <span class="temp-value" id="currentTemp">–</span>
+          <div class="temp-unit-toggle">
+            <button class="unit-btn active" id="btnC" onclick="switchUnit('C')">°C</button>
+            <button class="unit-btn" id="btnF" onclick="switchUnit('F')">°F</button>
+          </div>
+        </div>
+
+        <div class="current-stats">
+          <div class="stat-item">
+            <span class="stat-icon">💧</span>
+            <div>
+              <p class="stat-label">Humidity</p>
+              <p class="stat-value" id="humidity">–</p>
+            </div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">💨</span>
+            <div>
+              <p class="stat-label">Wind</p>
+              <p class="stat-value" id="windSpeed">–</p>
+            </div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">🌡️</span>
+            <div>
+              <p class="stat-label">Feels Like</p>
+              <p class="stat-value" id="feelsLike">–</p>
+            </div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">👁️</span>
+            <div>
+              <p class="stat-label">Visibility</p>
+              <p class="stat-value" id="visibility">–</p>
+            </div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">🧭</span>
+            <div>
+              <p class="stat-label">Pressure</p>
+              <p class="stat-value" id="pressure">–</p>
+            </div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">☁️</span>
+            <div>
+              <p class="stat-label">Cloud Cover</p>
+              <p class="stat-value" id="cloudCover">–</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7-Day Forecast -->
+      <div class="forecast-section">
+        <h2 class="section-title">7-Day Forecast</h2>
+        <div class="forecast-grid" id="forecastGrid"></div>
+      </div>
+
+      <!-- Hourly forecast -->
+      <div class="forecast-section">
+        <h2 class="section-title">Hourly Forecast (24h)</h2>
+        <div class="hourly-scroll" id="hourlyScroll"></div>
+      </div>
+
+    </div>
+
+    <!-- Welcome state -->
+    <div class="welcome" id="welcomeState">
+      <div class="welcome-icon">🌍</div>
+      <h2>Discover your weather</h2>
+      <p>Type any city name above to get real-time conditions and a 7-day forecast, powered by Open-Meteo.</p>
+      <div class="quick-cities">
+        <button class="quick-btn" onclick="quickSearch('London')">🇬🇧 London</button>
+        <button class="quick-btn" onclick="quickSearch('New York')">🗽 New York</button>
+        <button class="quick-btn" onclick="quickSearch('Tokyo')">🗼 Tokyo</button>
+        <button class="quick-btn" onclick="quickSearch('Dubai')">🏙️ Dubai</button>
+        <button class="quick-btn" onclick="quickSearch('Paris')">🗼 Paris</button>
+        <button class="quick-btn" onclick="quickSearch('Karachi')">🇵🇰 Karachi</button>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <p>Powered by <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> &amp; <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener">Nominatim</a> · Free &amp; Open APIs · No API key required</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
