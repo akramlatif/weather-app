@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkyPulse – Profile & Preferences</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/profile.css" />
+</head>
+<body>
+
+  <!-- Background blobs -->
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+
+  <div class="profile-container">
+    <a href="dashboard.html" class="profile-back-link">
+      <span>← Back to Dashboard</span>
+    </a>
+
+    <div class="glass-card profile-card animate-fade-up">
+      <div class="profile-header">
+        <div class="avatar-wrapper">
+          <img src="https://via.placeholder.com/150" alt="Avatar" id="profileAvatar" />
+          <div class="avatar-upload-overlay" onclick="triggerAvatarUpload()">
+            <span>📷</span>
+            <p>Upload Photo</p>
+          </div>
+          <input type="file" id="avatarInput" style="display: none;" accept="image/*" onchange="handleAvatarFileSelect(event)" />
+        </div>
+        <h2 id="profileName">--</h2>
+        <p id="profileEmail">--</p>
+      </div>
+
+      <!-- Settings Profile Form -->
+      <h3 class="profile-section-title">Personal Information</h3>
+      <form id="profileForm" class="profile-form">
+        <div class="form-group">
+          <label for="inputName">Full Name</label>
+          <input type="text" id="inputName" class="input-field" required />
+        </div>
+        <div class="form-group">
+          <label for="inputEmail">Email Address</label>
+          <input type="email" id="inputEmail" class="input-field" required />
+        </div>
+        <button type="submit" class="btn btn-primary" id="saveProfileBtn">Save Changes</button>
+      </form>
+
+      <!-- Unit and theme Preferences -->
+      <h3 class="profile-section-title">Application Preferences</h3>
+      <div class="profile-form">
+        <div class="preference-row">
+          <div class="preference-info">
+            <h4>Application Theme</h4>
+            <p>Switch between Light and Dark mode UI.</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="themePreferenceToggle" onchange="handleThemePreferenceChange(event)" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="preference-row">
+          <div class="preference-info">
+            <h4>Temperature Display Unit</h4>
+            <p>Toggle between Celsius (°C) and Fahrenheit (°F) scales.</p>
+          </div>
+          <div class="temp-unit-toggle" style="margin-top: 0;">
+            <button class="unit-btn active" id="profileBtnC" onclick="switchProfileUnit('C')">°C</button>
+            <button class="unit-btn" id="profileBtnF" onclick="switchProfileUnit('F')">°F</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Change password -->
+      <h3 class="profile-section-title">Change Password</h3>
+      <form id="passwordForm" class="profile-form">
+        <div class="form-group">
+          <label for="currentPassword">Current Password</label>
+          <input type="password" id="currentPassword" class="input-field" placeholder="••••••••" required />
+        </div>
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <input type="password" id="newPassword" class="input-field" placeholder="Min. 6 characters" required />
+        </div>
+        <div class="form-group">
+          <label for="confirmNewPassword">Confirm New Password</label>
+          <input type="password" id="confirmNewPassword" class="input-field" placeholder="Repeat your new password" required />
+        </div>
+        <button type="submit" class="btn btn-secondary" id="savePasswordBtn">Update Password</button>
+      </form>
+
+      <!-- Account specs -->
+      <h3 class="profile-section-title">Account Statistics</h3>
+      <div class="account-info-box">
+        <p>Member Since: <strong id="memberSinceText">--</strong></p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast notices -->
+  <div class="toast-container"></div>
+
+  <!-- Javascript modules -->
+  <script src="js/utils.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/profile.js"></script>
+</body>
+</html>

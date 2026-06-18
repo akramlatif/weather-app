@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkyPulse – Weather Dashboard</title>
+  
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+
+  <!-- Background blobs -->
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+
+  <div class="dashboard-layout">
+    
+    <!-- Left Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-logo-icon">🌤️</span>
+        <span class="sidebar-logo-text">SkyPulse</span>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <div class="sidebar-link active" data-section="weather">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span>Dashboard</span>
+        </div>
+        <div class="sidebar-link" data-section="favorites">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          <span>Favorites</span>
+        </div>
+        <div class="sidebar-link" data-section="history">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span>History</span>
+        </div>
+        <div class="sidebar-link" data-section="map">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+          <span>Weather Map</span>
+        </div>
+        <div class="sidebar-link" data-section="charts">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z"/></svg>
+          <span>Charts & Trends</span>
+        </div>
+        <div class="sidebar-link" data-section="insights">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          <span>Smart Insights</span>
+        </div>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <a href="report.html" class="sidebar-link" style="margin-bottom: 8px;">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          <span>PBL Project Report</span>
+        </a>
+        <a href="profile.html" class="sidebar-link" style="margin-bottom: 8px;">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span>Preferences</span>
+        </a>
+        <div class="sidebar-link" onclick="logoutUser()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          <span>Sign Out</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-area">
+      
+      <!-- Top header bar -->
+      <header class="topbar">
+        <button class="mobile-menu-btn" id="mobileMenuToggle" onclick="toggleMobileSidebar()">☰</button>
+        
+        <!-- City Search Box -->
+        <div class="search-container">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="cityInput" placeholder="Search for a city..." autocomplete="off" spellcheck="false" aria-label="City name" />
+            <button id="searchBtn">
+              <span>Search</span>
+            </button>
+          </div>
+          <!-- Autocomplete dropdown -->
+          <ul class="suggestions hidden" id="suggestions" role="listbox"></ul>
+        </div>
+        
+        <!-- Header Actions -->
+        <div class="topbar-actions">
+          <button class="btn-icon" id="gpsBtn" title="Use current location">📍</button>
+          <button class="btn-icon" id="themeToggle" title="Toggle theme">🌙</button>
+          <a href="profile.html" class="user-avatar-btn" id="userAvatarBtn">
+            <img src="https://via.placeholder.com/150" alt="Profile" id="headerAvatar" />
+          </a>
+        </div>
+      </header>
+      
+      <div class="main-content">
+
+        <!-- Welcome / Search Page (Shown when no search is active) -->
+        <section id="welcomeState" class="welcome-state animate-fade-in">
+          <div class="welcome-icon">🌍</div>
+          <h2>SkyPulse Dashboard</h2>
+          <p>Discover real-time conditions, detailed 7-day forecasts, atmospheric charts, air quality reports, and smart weather recommendations based on your preferences. Search any city name above or select a quick option to begin.</p>
+          <div class="quick-cities">
+            <button class="quick-btn" onclick="quickSearch('London')">🇬🇧 London</button>
+            <button class="quick-btn" onclick="quickSearch('New York')">🗽 New York</button>
+            <button class="quick-btn" onclick="quickSearch('Tokyo')">🗼 Tokyo</button>
+            <button class="quick-btn" onclick="quickSearch('Dubai')">🏙️ Dubai</button>
+            <button class="quick-btn" onclick="quickSearch('Paris')">🗼 Paris</button>
+            <button class="quick-btn" onclick="quickSearch('Karachi')">🇵🇰 Karachi</button>
+          </div>
+        </section>
+
+        <!-- Loader Spinner -->
+        <div class="loader hidden" id="loader">
+          <div class="spinner"></div>
+          <p>Fetching weather information...</p>
+        </div>
+
+        <!-- Weather Panel (Primary view) -->
+        <section id="weatherSection" class="dashboard-section hidden animate-fade-in">
+          <div class="glass-card current-weather-card">
+            
+            <!-- Heart icon to save location -->
+            <div class="favorite-btn-wrap">
+              <button class="btn-icon fav-btn" id="favToggleBtn" onclick="toggleFavoriteCurrentLocation()">♡</button>
+            </div>
+
+            <div class="current-top">
+              <div class="city-info">
+                <h1 id="cityName">--</h1>
+                <p class="country" id="country">--</p>
+                <p class="date-time" id="dateTime">--</p>
+              </div>
+              <div class="weather-icon-wrap">
+                <div class="weather-icon" id="currentIcon">🌡️</div>
+                <p class="weather-desc" id="currentDesc">--</p>
+              </div>
+            </div>
+
+            <div class="temp-display">
+              <span class="temp-value" id="currentTemp">--</span>
+              <div class="temp-unit-toggle">
+                <button class="unit-btn active" id="btnC" onclick="switchUnit('C')">°C</button>
+                <button class="unit-btn" id="btnF" onclick="switchUnit('F')">°F</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Extended atmospheric parameters -->
+          <div class="weather-details-grid" id="detailsGrid">
+            <div class="glass-card detail-item">
+              <span class="detail-icon">💧</span>
+              <div>
+                <p class="detail-label">Humidity</p>
+                <p class="detail-value" id="humidity">--</p>
+              </div>
+            </div>
+            <div class="glass-card detail-item">
+              <span class="detail-icon">💨</span>
+              <div>
+                <p class="detail-label">Wind Speed</p>
+                <p class="detail-value" id="windSpeed">--</p>
+              </div>
+            </div>
+            <div class="glass-card detail-item">
+              <span class="detail-icon">🧭</span>
+              <div>
+                <p class="detail-label">Wind Direction</p>
+                <p class="detail-value" id="windDirection">--</p>
+              </div>
+            </div>
+            <div class="glass-card detail-item">
+              <span class="detail-icon">🌡️</span>
+              <div>
+                <p class="detail-label">Feels Like</p>
+                <p class="detail-value" id="feelsLike">--</p>
+              </div>
+            </div>
+            <div class="glass-card detail-item">
+              <span class="detail-icon">👁️</span>
+              <div>
+                <p class="detail-label">Visibility</p>
+                <p class="detail-value" id="visibility">--</p>
+              </div>
+            </div>
+            <div class="glass-card detail-item">
+              <span class="detail-icon">🎚️</span>
+              <div>
+                <p class="detail-label">Pressure</p>
+                <p class="detail-value" id="pressure">--</p>
+              </div>
+            </div>
+            <div class="glass-card detail-item">
+              <span class="detail-icon">☀️</span>
+              <div>
+                <p class="detail-label">UV Index</p>
+                <p class="detail-value" id="uvIndex">--</p>
+              </div>
+            </div>
+            <div class="glass-card detail-item">
+              <span class="detail-icon">😷</span>
+              <div>
+                <p class="detail-label">Air Quality</p>
+                <p class="detail-value" id="aqi">--</p>
+              </div>
+            </div>
+            <div class="glass-card detail-item">
+              <span class="detail-icon">🌅</span>
+              <div>
+                <p class="detail-label">Sunrise</p>
+                <p class="detail-value" id="sunrise">--</p>
+              </div>
+            </div>
+            <div class="glass-card detail-item">
+              <span class="detail-icon">🌇</span>
+              <div>
+                <p class="detail-label">Sunset</p>
+                <p class="detail-value" id="sunset">--</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hourly Forecast Scroll -->
+          <div>
+            <h2 class="section-title">Hourly Forecast (24 Hours)</h2>
+            <div class="hourly-scroll" id="hourlyScroll"></div>
+          </div>
+
+          <!-- 7-Day Forecast Grid -->
+          <div>
+            <h2 class="section-title">7-Day Forecast</h2>
+            <div class="forecast-grid" id="forecastGrid"></div>
+          </div>
+        </section>
+
+        <!-- Charts Section (Atmospheric graphs) -->
+        <section id="chartsSection" class="dashboard-section hidden animate-fade-in">
+          <div>
+            <h2 class="section-title">Visualized Trends</h2>
+            <div class="glass-card chart-card">
+              <div class="chart-tabs">
+                <button class="chart-tab-btn active" onclick="switchChartTab('temp')">Temperature</button>
+                <button class="chart-tab-btn" onclick="switchChartTab('humidity')">Humidity</button>
+                <button class="chart-tab-btn" onclick="switchChartTab('wind')">Wind Speed</button>
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="tempChart"></canvas>
+                <canvas id="humidityChart" class="hidden"></canvas>
+                <canvas id="windChart" class="hidden"></canvas>
+              </div>
+            </div>
+
+            <div class="glass-card chart-card">
+              <h2 class="section-title">Weekly Highs and Lows</h2>
+              <div class="chart-wrapper">
+                <canvas id="weeklyChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Map Section (Leaflet container) -->
+        <section id="mapSection" class="dashboard-section hidden animate-fade-in">
+          <div>
+            <h2 class="section-title">Interactive Weather Map</h2>
+            <p style="color: var(--text-dim); margin-bottom: 16px; font-size: 0.9rem;">Click anywhere on the map to query the weather for that location, or review marked favorite destinations.</p>
+            <div class="glass-card">
+              <div id="mapContainer" class="map-container"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Favorites Section -->
+        <section id="favoritesSection" class="dashboard-section hidden animate-fade-in">
+          <div>
+            <h2 class="section-title">Saved favorite cities (Max 10)</h2>
+            <div class="favorites-list" id="favoritesList">
+              <!-- Rendered Dynamically -->
+            </div>
+          </div>
+        </section>
+
+        <!-- History Section -->
+        <section id="historySection" class="dashboard-section hidden animate-fade-in">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <h2 class="section-title" style="margin-bottom: 0;">Search History</h2>
+              <button class="btn btn-secondary btn-ghost" id="clearHistoryBtn" onclick="clearSearchHistory()">Clear All</button>
+            </div>
+            <div class="history-list" id="historyList">
+              <!-- Rendered Dynamically -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Smart Insights Section -->
+        <section id="insightsSection" class="dashboard-section hidden animate-fade-in">
+          <div>
+            <h2 class="section-title">SkyPulse Smart Insights</h2>
+            <div class="insights-grid">
+              
+              <!-- Clothing Advice -->
+              <div class="glass-card insight-card" id="clothingInsight">
+                <span class="insight-icon">🧥</span>
+                <div class="insight-content">
+                  <h3>Clothing Recommendation</h3>
+                  <p id="clothingText">Search for a location to view custom suggestions.</p>
+                </div>
+              </div>
+
+              <!-- Activity Suitability -->
+              <div class="glass-card insight-card" id="travelInsight">
+                <span class="insight-icon">✈️</span>
+                <div class="insight-content">
+                  <h3>Outdoor & Travel Recommendation</h3>
+                  <p id="travelText">Select a city to check travel compatibility.</p>
+                </div>
+              </div>
+
+              <!-- Severe Weather Alerts -->
+              <div class="glass-card insight-card" id="weatherAlertsInsight">
+                <span class="insight-icon">⚠️</span>
+                <div class="insight-content">
+                  <h3>Severe Weather Alerts</h3>
+                  <p id="alertsText">No alerts for searched location.</p>
+                </div>
+              </div>
+
+              <!-- Natural Summary -->
+              <div class="glass-card insight-card" id="summaryInsight">
+                <span class="insight-icon">📝</span>
+                <div class="insight-content">
+                  <h3>Daily Summary</h3>
+                  <p id="summaryText">Query a location to generate smart summary insights.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+      </div>
+      
+      <!-- Mobile sidebar overlay click container -->
+      <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
+    </main>
+
+  </div>
+
+  <!-- Toast notifications -->
+  <div class="toast-container"></div>
+
+  <!-- Leaflet Javascript -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- Chart.js Javascript -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- JS Modules -->
+  <script src="js/utils.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/favorites.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/insights.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

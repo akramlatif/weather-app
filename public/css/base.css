@@ -1,0 +1,116 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+/* --- Animated background blobs --- */
+.bg-blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.16;
+  pointer-events: none;
+  animation: drift 25s ease-in-out infinite alternate;
+  z-index: 0;
+  transition: background-color var(--transition);
+}
+
+.blob-1 {
+  width: 600px;
+  height: 600px;
+  background-color: var(--accent);
+  top: -180px;
+  left: -150px;
+  animation-delay: 0s;
+}
+
+.blob-2 {
+  width: 550px;
+  height: 550px;
+  background-color: var(--accent-2);
+  bottom: -150px;
+  right: -100px;
+  animation-delay: -6s;
+}
+
+.blob-3 {
+  width: 450px;
+  height: 450px;
+  background-color: var(--accent-3);
+  top: 40%;
+  left: 50%;
+  animation-delay: -12s;
+}
+
+@keyframes drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(60px, 40px) scale(1.1);
+  }
+}
+
+/* --- Scrollbars --- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
+}
+
+/* --- Selection --- */
+::selection {
+  background-color: var(--accent);
+  color: #fff;
+}
+
+/* --- Utility Classes --- */
+.hidden {
+  display: none !important;
+}
+
+.flex {
+  display: flex;
+}
+
+.grid {
+  display: grid;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: opacity var(--transition);
+}
+
+a:hover {
+  opacity: 0.85;
+}

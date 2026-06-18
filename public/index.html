@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkyPulse – Smart Weather Dashboard</title>
+  <meta name="description" content="Register or sign in to SkyPulse to save favorite locations, view weather graphs, maps, air quality index, and get personalized suggestions." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+</head>
+<body>
+
+  <!-- Animated background blobs -->
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+
+  <div class="auth-container">
+    <div class="glass-card auth-card animate-fade-up">
+      <header class="auth-header">
+        <span class="logo-icon">🌤️</span>
+        <h1>SkyPulse</h1>
+        <p>Smart Full-Stack Weather Dashboard</p>
+      </header>
+
+      <!-- Auth Selection Tabs -->
+      <div class="auth-tabs" id="authTabs">
+        <button class="auth-tab-btn active" id="tabLogin" onclick="switchTab('login')">Login</button>
+        <button class="auth-tab-btn" id="tabRegister" onclick="switchTab('register')">Register</button>
+        <div class="auth-tabs-slider"></div>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="auth-form">
+        <div class="form-group">
+          <label for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" class="input-field" placeholder="name@domain.com" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="loginPassword" class="input-field" placeholder="••••••••" required autocomplete="current-password" />
+            <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('loginPassword')">👁️</button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary form-submit" id="loginSubmitBtn">
+          <span>Sign In</span>
+        </button>
+      </form>
+
+      <!-- Register Form (Hidden by default) -->
+      <form id="registerForm" class="auth-form hidden">
+        <div class="form-group">
+          <label for="regName">Full Name</label>
+          <input type="text" id="regName" class="input-field" placeholder="John Doe" required autocomplete="name" />
+        </div>
+        <div class="form-group">
+          <label for="regEmail">Email Address</label>
+          <input type="email" id="regEmail" class="input-field" placeholder="john@example.com" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="regPassword">Password</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="regPassword" class="input-field" placeholder="Min. 6 characters" required autocomplete="new-password" />
+            <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('regPassword')">👁️</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="regConfirmPassword">Confirm Password</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="regConfirmPassword" class="input-field" placeholder="Repeat your password" required autocomplete="new-password" />
+            <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('regConfirmPassword')">👁️</button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary form-submit" id="registerSubmitBtn">
+          <span>Create Account</span>
+        </button>
+      </form>
+
+      <div class="auth-footer-links">
+        <p id="authToggleText">Don't have an account? <a href="#" onclick="switchTab('register'); return false;">Register here</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast alerts -->
+  <div class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

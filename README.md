@@ -1,71 +1,123 @@
-# SkyPulse Weather App
+# SkyPulse – Smart Weather Dashboard
 
-SkyPulse is a modern, responsive weather web app that shows real-time conditions, a 7-day forecast, and a 24-hour hourly forecast for cities worldwide.
+[![Node.js Version](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![MongoDB Version](https://img.shields.io/badge/MongoDB-6+-green.svg)](https://www.mongodb.com/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-It uses free and open APIs from Open-Meteo (weather + geocoding) and does not require an API key.
+SkyPulse is a professional full-stack **Smart Weather Dashboard** designed as a semester Project-Based Learning (PBL) project for the Web Technology course. It integrates live weather statistics, interactive maps, historic trends, data visualization charts, user profile configurations, and an automated rule-based clothing & travel suggestion engine.
+
+![SkyPulse Weather Dashboard Preview](docs/assets/dashboard_preview.png)
+
+---
 
 ## Features
 
-- City search with live autocomplete suggestions
-- Current weather conditions:
-  - Temperature
-  - Feels like
-  - Humidity
-  - Wind speed
-  - Visibility
-  - Pressure
-  - Cloud cover
-- 7-day weather forecast
-- 24-hour hourly forecast
-- Celsius/Fahrenheit unit toggle
-- Quick search buttons for popular cities
-- Fully responsive UI for desktop and mobile
+### 🌤️ Weather Statistics
+* **Current Weather conditions**: Temperature, humidity, pressure, wind direction & speed, visibility, feels-like.
+* **Air Quality Index (AQI)**: Real-time AQI tracking mapping standard levels.
+* **UV Index**: Daily solar UV radiations safety scales.
+* **24h Hourly & 7-Day Forecasts**: Visual graphs mapping incoming forecasts.
+
+### 👤 User Capabilities & Customizations
+* **JWT Authenticated sessions**: Secure signup, login, and profile configurations.
+* **Saved Favourite destinations**: Save up to 10 favorite cities for single-click queries.
+* **Search History Logs**: Retrieve your recent 20 queries with auto-cleared limits.
+* **Theming switch**: Seamless transition toggles between Light and Dark mode styles.
+* **Avatar Upload**: Support for custom image profile uploads via local file storage.
+
+### 📊 Data Visualization & Geo-Mapping
+* **Interactive Maps**: Powered by Leaflet.js mapping layers, click locations to query weather conditions instantly.
+* **Dynamic Graphs**: Powered by Chart.js mapping temperature ranges, wind speeds, and relative humidity trends.
+
+### 🧠 Smart Insights Engine
+* **Clothing suggestions**: Rule-based recommendations adjusted based on climate readings.
+* **Outdoor Suitability ratings**: Score cards suggesting travel convenience.
+* **Automated Weather Alerts**: Highlight warnings for rain risks, freezing coordinates, high wind gusts, and poor air.
+
+---
 
 ## Tech Stack
 
-- HTML5
-- CSS3
-- Vanilla JavaScript (ES6+)
-- Open-Meteo APIs
+* **Frontend**: Vanilla CSS variables, Modular HTML5 layouts, Vanilla JS modules, [Chart.js](https://www.chartjs.org/), [Leaflet.js](https://leafletjs.com/)
+* **Backend**: [Node.js](https://nodejs.org/), [Express.js](https://expressjs.com/) REST APIs
+* **Database**: [MongoDB](https://www.mongodb.com/) & [Mongoose](https://mongoosejs.com/) schemas
+* **Authentication**: JSON Web Tokens (JWT), Password encryption with `bcryptjs`
+* **File Uploads**: `multer` file uploads storage
 
-## APIs Used
+---
 
-- Geocoding API: https://geocoding-api.open-meteo.com/v1/search
-- Forecast API: https://api.open-meteo.com/v1/forecast
+## Folder Structure
 
-## Project Structure
+```
+weather-app-main/
+├── server/                          # Express.js REST backend
+│   ├── config/                      # Database settings config
+│   ├── controllers/                 # MVC Controllers handling logic
+│   ├── middleware/                  # JWT auth and validators
+│   ├── models/                      # MongoDB database schemas
+│   ├── routes/                      # Route maps mapping endpoints
+│   └── server.js                    # Core app boots script
+│
+├── public/                          # Frontend Static Assets
+│   ├── css/                         # Clean styled CSS variables files
+│   ├── js/                          # Modular JS handlers
+│   ├── index.html                   # Auth view template
+│   ├── dashboard.html               # Main weather visualizer
+│   └── profile.html                 # Profile setting sliders
+│
+├── uploads/                         # Directory hosting profile pictures
+├── docs/                            # PBL documentation and report files
+├── .env.example                     # Environment schema template
+├── package.json                     # Node script listings
+└── README.md
+```
 
-weather-app/
-- index.html
-- style.css
-- app.js
+---
 
-## How to Run Locally
+## Quick Start Setup
 
-1. Clone the repository:
+### 1. Prerequisites
+* Install [Node.js (18+)](https://nodejs.org/)
+* Install [MongoDB Community Edition](https://www.mongodb.com/try/download/community)
 
-   git clone https://github.com/akramlatif/weather-app.git
+### 2. Installation steps
+Clone this repository locally:
+```bash
+git clone https://github.com/akramlatif/weather-app.git
+cd weather-app
+```
 
-2. Go to the project folder:
+Install npm dependencies:
+```bash
+npm install
+```
 
-   cd weather-app
+Configure your local environments file:
+```bash
+cp .env.example .env
+```
+Fill variables inside `.env`:
+```env
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/skypulse
+JWT_SECRET=your_jwt_secret_key_string
+JWT_EXPIRE=7d
+```
 
-3. Open index.html in your browser.
+### 3. Running development server
+Start local MongoDB:
+```bash
+# Windows Command
+net start MongoDB
+```
 
-No build step or dependencies are required.
+Run application in hot-reload mode:
+```bash
+npm run dev
+```
+Open **[http://localhost:5000](http://localhost:5000)** inside your browser.
 
-## Notes
-
-- This project uses browser fetch calls directly to public APIs.
-- Internet connection is required for weather and geocoding data.
-
-## Future Improvements
-
-- Add location-based weather (GPS)
-- Add theme switching (light/dark)
-- Add precipitation charts
-- Add favorite cities with local storage
+---
 
 ## License
-
-This project is open source and available under the MIT License.
+MIT License. Created by Akram.

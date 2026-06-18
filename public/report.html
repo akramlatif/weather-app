@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkyPulse – PBL Project Report</title>
+  
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  
+  <style>
+    :root {
+      --sidebar-width: 280px;
+    }
+    
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    .report-layout {
+      display: flex;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+      gap: 32px;
+    }
+
+    /* Left Sidebar for Table of Contents */
+    .report-toc-sidebar {
+      width: var(--sidebar-width);
+      position: sticky;
+      top: 24px;
+      height: calc(100vh - 48px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .report-toc-sidebar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .report-toc-sidebar::-webkit-scrollbar-thumb {
+      background: var(--surface-border);
+      border-radius: 4px;
+    }
+
+    .toc-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toc-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .toc-item a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: block;
+      transition: all 0.2s ease;
+    }
+
+    .toc-item a:hover {
+      background: var(--surface);
+      color: var(--text);
+      transform: translateX(4px);
+    }
+
+    .toc-item.active a {
+      background: var(--surface-active);
+      color: var(--primary);
+      border-left: 3px solid var(--primary);
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    /* Main Report Content */
+    .report-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      padding-bottom: 80px;
+    }
+
+    .report-header {
+      padding: 40px;
+      text-align: center;
+      position: relative;
+    }
+
+    .report-header h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--primary) 0%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .report-header h2 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+    }
+
+    .metadata-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .meta-card {
+      padding: 16px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--surface-border);
+    }
+
+    .meta-label {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .meta-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 4px;
+    }
+
+    .report-section {
+      padding: 40px;
+      scroll-margin-top: 24px;
+    }
+
+    .report-section h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--surface-border);
+      padding-bottom: 10px;
+    }
+
+    .report-section h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 24px 0 12px 0;
+    }
+
+    .report-section p {
+      margin-bottom: 16px;
+      color: var(--text-dim);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    /* Styled Tables */
+    .report-table-wrapper {
+      overflow-x: auto;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--surface-border);
+    }
+
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .report-table th, .report-table td {
+      padding: 14px 18px;
+    }
+
+    .report-table th {
+      background: var(--surface-active);
+      color: var(--text);
+      font-weight: 600;
+      border-bottom: 2px solid var(--surface-border);
+    }
+
+    .report-table td {
+      border-bottom: 1px solid var(--surface-border);
+      color: var(--text-dim);
+    }
+
+    .report-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Mermaid Wrapper */
+    .mermaid-card {
+      background: rgba(255, 255, 255, 0.01) !important;
+      border: 1px solid var(--surface-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 24px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Highlight box / callouts */
+    .callout {
+      background: rgba(56, 189, 248, 0.05);
+      border-left: 4px solid var(--primary);
+      border-radius: 0 12px 12px 0;
+      padding: 20px;
+      margin: 24px 0;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    /* Code highlights */
+    pre {
+      background: #060913 !important;
+      border: 1px solid var(--surface-border);
+      border-radius: 12px;
+      padding: 20px;
+      overflow-x: auto;
+      margin: 24px 0;
+    }
+
+    code {
+      font-family: 'Consolas', 'Courier New', Courier, monospace;
+      font-size: 0.95rem;
+      color: #38bdf8;
+    }
+
+    p code {
+      background: rgba(56, 189, 248, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    /* Action Toolbar */
+    .report-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .report-back-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      transition: all 0.2s ease;
+    }
+
+    .report-back-btn:hover {
+      background: var(--surface-active);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .report-layout {
+        flex-direction: column;
+      }
+      .report-toc-sidebar {
+        width: 100%;
+        position: static;
+        height: auto;
+      }
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        background: white;
+        color: black;
+      }
+      .report-toc-sidebar, .report-toolbar, .bg-blob {
+        display: none !important;
+      }
+      .report-layout {
+        padding: 0;
+        max-width: 100%;
+      }
+      .report-content {
+        padding-bottom: 0;
+      }
+      .glass-card {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .report-section {
+        page-break-after: always;
+        padding: 20px 0;
+      }
+      pre {
+        background: #f5f5f5 !important;
+        color: black;
+        border: 1px solid #ccc;
+      }
+      code {
+        color: black;
+      }
+      .report-table th {
+        background: #eee !important;
+        color: black !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Animated background blobs -->
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+
+  <div class="report-layout">
+    
+    <!-- Left Navigation Sidebar -->
+    <aside class="report-toc-sidebar">
+      <div class="glass-card" style="padding: 20px; border-radius: 16px;">
+        <div class="toc-title">
+          <span>📚</span> Table of Contents
+        </div>
+        <ul class="toc-list">
+          <li class="toc-item active" data-target="header"><a href="#header">Title & Meta</a></li>
+          <li class="toc-item" data-target="ch1"><a href="#ch1">1. Introduction</a></li>
+          <li class="toc-item" data-target="ch2"><a href="#ch2">2. Literature Review</a></li>
+          <li class="toc-item" data-target="ch3"><a href="#ch3">3. Requirements Analysis</a></li>
+          <li class="toc-item" data-target="ch4"><a href="#ch4">4. Architecture & Design</a></li>
+          <li class="toc-item" data-target="ch5"><a href="#ch5">5. Core Implementation</a></li>
+          <li class="toc-item" data-target="ch6"><a href="#ch6">6. Verification & Testing</a></li>
+          <li class="toc-item" data-target="ch7"><a href="#ch7">7. Evaluation & Results</a></li>
+          <li class="toc-item" data-target="ch8"><a href="#ch8">8. Technical Challenges</a></li>
+          <li class="toc-item" data-target="ch9"><a href="#ch9">9. Future Scope</a></li>
+          <li class="toc-item" data-target="ch10"><a href="#ch10">10. Conclusion</a></li>
+          <li class="toc-item" data-target="ref"><a href="#ref">References</a></li>
+        </ul>
+      </div>
+      
+      <button class="btn btn-primary" onclick="window.print()" style="width: 100%;">
+        <span>🖨️ Print Report to PDF</span>
+      </button>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="report-content">
+      
+      <div class="report-toolbar">
+        <a href="dashboard.html" class="report-back-btn">
+          <span>← Back to Dashboard</span>
+        </a>
+        <button class="btn-icon" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+      </div>
+
+      <!-- Report Header -->
+      <header class="glass-card report-header animate-fade-in" id="header">
+        <h1>SkyPulse</h1>
+        <h2>Smart Weather Dashboard</h2>
+        <p style="color: var(--text-dim); margin-bottom: 24px;">Project-Based Learning (PBL) Report submitted for Web Technology Course Evaluation</p>
+        
+        <div class="metadata-grid">
+          <div class="meta-card">
+            <div class="meta-label">Course</div>
+            <div class="meta-value">Web Technology</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-label">Semester</div>
+            <div class="meta-value">3rd Semester</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-label">Project Owner</div>
+            <div class="meta-value">Akram</div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-label">Database Type</div>
+            <div class="meta-value">NoSQL / localJSON</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Section Abstract -->
+      <section class="glass-card report-section animate-fade-in">
+        <h2>Abstract</h2>
+        <p>In the modern digital era, accessibility to real-time, high-fidelity meteorological data has transformed from a simple convenience to a core operational necessity. This Project-Based Learning (PBL) report details the design, engineering, and implementation of <strong>SkyPulse</strong>, a full-stack, responsive meteorological dashboard web application.</p>
+        <p>By integrating a frontend built with HTML5, CSS3, and modular vanilla JavaScript, a RESTful API backend structured in Node.js and Express.js, and a document-oriented database using MongoDB, SkyPulse transitions standard weather searches into a personalized, data-driven analytical tool. The application incorporates JWT (JSON Web Tokens) security, password hashing with bcrypt, interactive maps (Leaflet.js), dynamic data plots (Chart.js), and a localized automated recommendation engine based on current weather parameters (AQI, UV, temperature, winds).</p>
+        <p>This report provides complete system specifications, design schemas, database entity layouts, implementation code logic, test cases, and viva evaluations supporting the submission of this project for academic evaluation.</p>
+      </section>
+
+      <!-- Chapter 1 -->
+      <section class="glass-card report-section" id="ch1">
+        <h2>Chapter 1: Introduction</h2>
+        <h3>1.1 Background of the Study</h3>
+        <p>Weather conditions dictate daily human operations, agricultural planning, logistic coordination, and industrial productivity. Standard weather reporting systems often display aggregated data that lacks individual personalization.</p>
+        
+        <h3>1.2 Problem Statement</h3>
+        <p>Public weather applications often require expensive premium tiers for historical trend analysis, suffer from slow interface loading times due to third-party ad insertions, lack profile configuration capabilities to customize preferred units, and rarely supply contextual advice (such as clothing or outdoor activity suggestions) in a unified dashboard. Furthermore, students of Web Technology need a full-stack, referenceable implementation model demonstrating Model-View-Controller (MVC) API principles, state-management transitions, and secure JSON Web Token authentication.</p>
+        
+        <h3>1.3 Project Objectives</h3>
+        <p>The primary developmental goals of the SkyPulse dashboard are:</p>
+        <ul>
+          <li>Develop a fully responsive, portfolio-worthy, single-page-like interactive dashboard utilizing modern glassmorphic theme tokens.</li>
+          <li>Create a robust, JWT-protected REST API using Express.js to store user profiles, saved favorite locations, and search logs.</li>
+          <li>Implement database schemas in MongoDB using Mongoose, establishing distinct relations, indexes, and validation rules.</li>
+          <li>Visualize atmospheric statistical trends (temperature ranges, humidity percentages, wind speeds) utilizing responsive graphing libraries (Chart.js).</li>
+          <li>Integrate spatial visual representations using interactive maps (Leaflet.js) to query coordinate data on user clicks.</li>
+          <li>Devise a client-side rule engine (Smart Insights) to generate automated daily text summaries, clothing guidance, activity convenience scores, and warning logs.</li>
+        </ul>
+
+        <h3>1.4 Project Scope & Significance</h3>
+        <p>The scope of SkyPulse spans a full-stack application leveraging free, non-authenticated open REST APIs (Open-Meteo, OpenStreetMap Nominatim). The significance lies in demonstrating a clean division of concerns (MVC backend, modular frontend JavaScript, data visualizations), providing a reference project for undergraduate academic evaluations.</p>
+      </section>
+
+      <!-- Chapter 2 -->
+      <section class="glass-card report-section" id="ch2">
+        <h2>Chapter 2: Literature Review</h2>
+        <h3>2.1 Analysis of Existing Meteorological Systems</h3>
+        <p>Standard weather portals (e.g., AccuWeather, Weather.com, Yahoo Weather) serve as the primary benchmarks for this application.</p>
+
+        <h3>2.2 Feature Comparison Matrix</h3>
+        <div class="report-table-wrapper">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>System / Feature</th>
+                <th>AccuWeather</th>
+                <th>Weather.com</th>
+                <th>Yahoo Weather</th>
+                <th>SkyPulse (Proposed)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Auth & Profile</strong></td>
+                <td>Basic</td>
+                <td>Basic</td>
+                <td>Basic</td>
+                <td>High (JWT + Profile Uploads)</td>
+              </tr>
+              <tr>
+                <td><strong>Theme Modes</strong></td>
+                <td>Automatic</td>
+                <td>Automatic</td>
+                <td>Static</td>
+                <td>Toggleable (Light/Dark)</td>
+              </tr>
+              <tr>
+                <td><strong>Ad-free Layout</strong></td>
+                <td>No (Paid tier)</td>
+                <td>No (Paid tier)</td>
+                <td>No</td>
+                <td>Yes (100% Free)</td>
+              </tr>
+              <tr>
+                <td><strong>Interactive Map</strong></td>
+                <td>Heavy/Slow</td>
+                <td>Heavy/Slow</td>
+                <td>None</td>
+                <td>Lightweight (Leaflet.js)</td>
+              </tr>
+              <tr>
+                <td><strong>Charts & Graphs</strong></td>
+                <td>Static Tables</td>
+                <td>Premium Only</td>
+                <td>Static Tables</td>
+                <td>Responsive (Chart.js)</td>
+              </tr>
+              <tr>
+                <td><strong>Contextual Insights</strong></td>
+                <td>None</td>
+                <td>Basic</td>
+                <td>None</td>
+                <td>Rule Engine (Clothing & Travel)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>2.3 Identified System Gaps</h3>
+        <p>Existing apps are heavily monetized with ads, resulting in high latency on mobile devices. Data tables are often tabular rather than graphical, making immediate forecast trend comprehension difficult. Personalization is typically limited to simple unit toggles, without saving recent queries or offering localized, context-aware suggestions.</p>
+
+        <h3>2.4 Proposed SkyPulse Enhancements</h3>
+        <p>SkyPulse addresses these issues by offering an ad-free glassmorphic interface, client-side caching of preferences, local file uploads for avatars, dynamic charts, and natural language weather summaries with clothing and outdoor safety insights.</p>
+      </section>
+
+      <!-- Chapter 3 -->
+      <section class="glass-card report-section" id="ch3">
+        <h2>Chapter 3: System Requirements Analysis</h2>
+        <h3>3.1 Functional Requirements</h3>
+        <ul>
+          <li><strong>FR-1 (Auth)</strong>: Users must register with a name, email, and password, and login to receive a secure JWT token.</li>
+          <li><strong>FR-2 (Search)</strong>: Search city inputs must return matching results with debounced autocomplete suggestions.</li>
+          <li><strong>FR-3 (Favorites)</strong>: Users can save up to 10 cities as favorites, which persist in the database.</li>
+          <li><strong>FR-4 (History)</strong>: Recent search logs must save to the database, showing the 20 most recent entries with auto-cleanup of older logs.</li>
+          <li><strong>FR-5 (Visualization)</strong>: Render 24h temperature, humidity, and wind trend charts alongside 7-day forecast cards.</li>
+          <li><strong>FR-6 (Map)</strong>: Map coordinates must display markers for the current search and favorited locations, and respond to clicks by fetching new weather data.</li>
+          <li><strong>FR-7 (Insights)</strong>: Generate clothing suggestions, outdoor travel suitability scores, and severe weather warnings (AQI, UV, storms) based on real-time data.</li>
+          <li><strong>FR-8 (Profile)</strong>: Users can edit their profile details, change passwords, select preferred themes or units, and upload an avatar.</li>
+        </ul>
+
+        <h3>3.2 Non-Functional Requirements</h3>
+        <ul>
+          <li><strong>NFR-1 (Security)</strong>: Password database records must be hashed using bcrypt. Sensitive routes must require valid JWT Bearer tokens.</li>
+          <li><strong>NFR-2 (Performance)</strong>: Client geocoding queries must be debounced by 350ms to limit unnecessary API requests.</li>
+          <li><strong>NFR-3 (Usability)</strong>: Responsive layouts must adapt to desktop, tablet, and mobile views using CSS grid/flexbox.</li>
+          <li><strong>NFR-4 (Compatibility)</strong>: Maintain compatibility across modern browsers (Chrome, Firefox, Safari, Edge) without requiring build compilations.</li>
+        </ul>
+
+        <h3>3.3 Use Case Diagram</h3>
+        <div class="mermaid-card">
+          <pre class="mermaid" style="background:transparent!important;border:none!important;padding:0;">
+            leftToRightDirection
+            actor User as "Registered User"
+            actor Guest as "Guest User"
+
+            rectangle SkyPulseSystem {
+              usecase UC1 as "Register Account"
+              usecase UC2 as "Sign In"
+              usecase UC3 as "Query City Weather"
+              usecase UC4 as "Save Favorite City"
+              usecase UC5 as "Review Search History"
+              usecase UC6 as "Interact with Map"
+              usecase UC7 as "View Trend Charts"
+              usecase UC8 as "Get Weather Recommendations"
+              usecase UC9 as "Update Profile & Avatar"
+            }
+
+            Guest --> UC1
+            Guest --> UC2
+            Guest --> UC3
+
+            User --> UC3
+            User --> UC4
+            User --> UC5
+            User --> UC6
+            User --> UC7
+            User --> UC8
+            User --> UC9
+          </pre>
+        </div>
+
+        <h3>3.4 Activity Workflow Diagram</h3>
+        <div class="mermaid-card">
+          <pre class="mermaid" style="background:transparent!important;border:none!important;padding:0;">
+            graph TD
+                A[Start Application] --> B{Token Exists in Cache?}
+                B -->|Yes| C[Load Dashboard UI]
+                B -->|No| D[Display Auth Page]
+                D --> E[User Logs In / Registers]
+                E -->|Success| F[Store Token & User]
+                F --> C
+                C --> G[Search for City]
+                G --> H[Fetch Open-Meteo Weather & AQI]
+                H --> I[Update DB Search History]
+                H --> J[Render Dashboard Data]
+                J --> K[Draw Charts & Leaflet Map]
+                J --> L[Process Smart Insights Rules]
+                C --> M[Open Preferences Page]
+                M --> N[Edit Name / Upload Profile Photo]
+                N --> O[Save Data to database]
+                O --> C
+          </pre>
+        </div>
+      </section>
+
+      <!-- Chapter 4 -->
+      <section class="glass-card report-section" id="ch4">
+        <h2>Chapter 4: System Architecture & Design</h2>
+        <h3>4.1 Backend Architecture Model</h3>
+        <p>The server follows the Model-View-Controller (MVC) software design pattern:</p>
+        <ul>
+          <li><strong>Models</strong>: Define the schemas mapping database document parameters.</li>
+          <li><strong>Controllers</strong>: House the HTTP endpoint logic, processing registrations, favorites additions, and database querying.</li>
+          <li><strong>Routes</strong>: Express routing rules mapping API paths to their respective controller methods.</li>
+          <li><strong>View (Client)</strong>: HTML/CSS templates served directly to browsers and powered by modular client JavaScript wrappers.</li>
+        </ul>
+
+        <h3>4.2 Entity-Relationship (ER) Design Schema</h3>
+        <div class="mermaid-card">
+          <pre class="mermaid" style="background:transparent!important;border:none!important;padding:0;">
+            erDiagram
+                USER {
+                    ObjectId _id PK
+                    String name
+                    String email
+                    String password
+                    String profilePicture
+                    Object preferences
+                    Date createdAt
+                }
+                FAVORITE {
+                    ObjectId _id PK
+                    ObjectId userId FK
+                    String cityName
+                    String country
+                    Number latitude
+                    Number longitude
+                    Date addedAt
+                }
+                SEARCH_HISTORY {
+                    ObjectId _id PK
+                    ObjectId userId FK
+                    String cityName
+                    String country
+                    Number latitude
+                    Number longitude
+                    Date searchedAt
+                }
+                USER ||--o{ FAVORITE : "saves"
+                USER ||--o{ SEARCH_HISTORY : "searches"
+          </pre>
+        </div>
+      </section>
+
+      <!-- Chapter 5 -->
+      <section class="glass-card report-section" id="ch5">
+        <h2>Chapter 5: Core Implementation Details</h2>
+        <h3>5.1 Dynamic Theming System</h3>
+        <p>SkyPulse uses CSS Custom Properties to implement seamless light/dark mode transitions:</p>
+        <pre><code class="language-css">/* variables.css snippet */
+:root {
+  --bg: #0a0f1e;
+  --surface: rgba(255, 255, 255, 0.06);
+  --text: #e8eeff;
+}
+[data-theme='light'] {
+  --bg: #f0f4ff;
+  --surface: rgba(255, 255, 255, 0.75);
+  --text: #1e293b;
+}</code></pre>
+        <p>Client code updates theme properties globally by setting a single attribute on the document root element:</p>
+        <pre><code class="language-javascript">document.documentElement.setAttribute('data-theme', 'light');</code></pre>
+
+        <h3>5.2 User Account Creation Password Hashing Hook</h3>
+        <p>Using Mongoose pre-save middleware ensures user passwords are encrypted before they are stored in the database:</p>
+        <pre><code class="language-javascript">// User.js model schema hook
+UserSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) {
+    next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});</code></pre>
+      </section>
+
+      <!-- Chapter 6 -->
+      <section class="glass-card report-section" id="ch6">
+        <h2>Chapter 6: System Verification & Testing</h2>
+        <h3>6.1 Quality Assurance Test Case Execution Matrix</h3>
+        <div class="report-table-wrapper">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Test ID</th>
+                <th>Area</th>
+                <th>Input</th>
+                <th>Expected Output</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>TC-01</strong></td>
+                <td>Registration</td>
+                <td>Short password (&lt; 6 chars)</td>
+                <td>Validation error: Password must be min 6 chars</td>
+                <td><span style="color: var(--success); font-weight:600;">Passed</span></td>
+              </tr>
+              <tr>
+                <td><strong>TC-02</strong></td>
+                <td>Registration</td>
+                <td>Valid parameters</td>
+                <td>User created, redirects to dashboard</td>
+                <td><span style="color: var(--success); font-weight:600;">Passed</span></td>
+              </tr>
+              <tr>
+                <td><strong>TC-03</strong></td>
+                <td>Login</td>
+                <td>Incorrect credentials</td>
+                <td>HTTP 401: Invalid email or password</td>
+                <td><span style="color: var(--success); font-weight:600;">Passed</span></td>
+              </tr>
+              <tr>
+                <td><strong>TC-04</strong></td>
+                <td>Autocomplete</td>
+                <td>Type 'Kara' in input</td>
+                <td>Suggestions dropdown shows 'Karachi, Pakistan'</td>
+                <td><span style="color: var(--success); font-weight:600;">Passed</span></td>
+              </tr>
+              <tr>
+                <td><strong>TC-05</strong></td>
+                <td>Weather Fetch</td>
+                <td>Select 'Tokyo'</td>
+                <td>Hero temperature, details, and 7-day forecast update</td>
+                <td><span style="color: var(--success); font-weight:600;">Passed</span></td>
+              </tr>
+              <tr>
+                <td><strong>TC-06</strong></td>
+                <td>Favorites Limit</td>
+                <td>Save 11th favorite location</td>
+                <td>HTTP 400: Limit of 10 favorites reached</td>
+                <td><span style="color: var(--success); font-weight:600;">Passed</span></td>
+              </tr>
+              <tr>
+                <td><strong>TC-07</strong></td>
+                <td>History logs</td>
+                <td>Search for 3 cities</td>
+                <td>History section displays all 3 items in desc order</td>
+                <td><span style="color: var(--success); font-weight:600;">Passed</span></td>
+              </tr>
+              <tr>
+                <td><strong>TC-08</strong></td>
+                <td>Maps</td>
+                <td>Click map at coordinate</td>
+                <td>Location name reversed, weather view updates</td>
+                <td><span style="color: var(--success); font-weight:600;">Passed</span></td>
+              </tr>
+              <tr>
+                <td><strong>TC-09</strong></td>
+                <td>Charts</td>
+                <td>Click wind speed tab</td>
+                <td>Dotted wind speed trend line renders successfully</td>
+                <td><span style="color: var(--success); font-weight:600;">Passed</span></td>
+              </tr>
+              <tr>
+                <td><strong>TC-10</strong></td>
+                <td>Profile Avatar</td>
+                <td>Upload 8MB image</td>
+                <td>Multer errors, blocks size &gt; 5MB</td>
+                <td><span style="color: var(--success); font-weight:600;">Passed</span></td>
+              </tr>
+              <tr>
+                <td><strong>TC-11</strong></td>
+                <td>Password Change</td>
+                <td>Match error in confirm field</td>
+                <td>Form submission blocked on client side</td>
+                <td><span style="color: var(--success); font-weight:600;">Passed</span></td>
+              </tr>
+              <tr>
+                <td><strong>TC-12</strong></td>
+                <td>Preferences</td>
+                <td>Click Fahrenheit toggle</td>
+                <td>Temperatures convert to °F across all cards and charts</td>
+                <td><span style="color: var(--success); font-weight:600;">Passed</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Chapter 7 -->
+      <section class="glass-card report-section" id="ch7">
+        <h2>Chapter 7: Evaluation & Results</h2>
+        <p>SkyPulse successfully transforms a basic weather application into a responsive, full-stack analytical platform. Performance tests demonstrate low latency because weather queries are handled directly from the client side, bypassing backend proxy delays. The glassmorphic interface scales fluidly on mobile viewports, and database indexing on user favorites and history ensures quick retrieval times.</p>
+      </section>
+
+      <!-- Chapter 8 -->
+      <section class="glass-card report-section" id="ch8">
+        <h2>Chapter 8: Technical Challenges & Troubleshooting</h2>
+        <ul>
+          <li><strong>Challenge 1: Multer Directory Path Errors</strong>: Creating uploads path references caused crashes if the target directory was missing during production boot. Resolving this involved writing a placeholder `.gitkeep` inside `/uploads/`.</li>
+          <li><strong>Challenge 2: Chart Redraw Overlay Bugs</strong>: Re-rendering canvas elements without cleaning previous chart instances left legacy frames visible on hover. This was resolved by implementing clean `destroy()` calls on active Chart.js objects before initializing new graphs.</li>
+          <li><strong>Challenge 3: Database Portability</strong>: Many users do not have a local MongoDB service pre-installed or running. To solve this, a fast, zero-dependency, local file-based database engine (`mockMongoose.js`) was engineered to automatically intercept and persist data to `uploads/db.json`, making the app fully portable out of the box.</li>
+        </ul>
+      </section>
+
+      <!-- Chapter 9 -->
+      <section class="glass-card report-section" id="ch9">
+        <h2>Chapter 9: Future System Improvements</h2>
+        <ul>
+          <li><strong>Progressive Web App (PWA)</strong> support to enable offline caching and home-screen installation.</li>
+          <li><strong>Web Push Notifications</strong> for automated daily weather briefing summaries.</li>
+          <li><strong>Social Sharing Integrations</strong> to let users share graphs or summaries to platforms like Twitter/X.</li>
+        </ul>
+      </section>
+
+      <!-- Chapter 10 -->
+      <section class="glass-card report-section" id="ch10">
+        <h2>Chapter 10: Conclusion</h2>
+        <p>The SkyPulse dashboard successfully implements a responsive, full-stack architecture using Node.js, Express, and a local database, with modular frontend JavaScript. By building this system, several key competencies were developed: designing document-oriented database schemas, establishing secure token-based user sessions, configuring multi-part uploads with Multer, and implementing dynamic data visualizations with Chart.js and Leaflet.js.</p>
+      </section>
+
+      <!-- References -->
+      <section class="glass-card report-section" id="ref">
+        <h2>References & Bibliography</h2>
+        <ol>
+          <li>Express.js REST Routing Guidelines: <a href="https://expressjs.com/" target="_blank">https://expressjs.com/</a></li>
+          <li>Mongoose Schema Schema Validation Rules: <a href="https://mongoosejs.com/docs/validation.html" target="_blank">https://mongoosejs.com/docs/validation.html</a></li>
+          <li>Open-Meteo Meteorological REST Specs: <a href="https://open-meteo.com/en/docs" target="_blank">https://open-meteo.com/en/docs</a></li>
+          <li>Chart.js Configurations Reference: <a href="https://www.chartjs.org/docs/" target="_blank">https://www.chartjs.org/docs/</a></li>
+          <li>Leaflet Map Controls Reference Guide: <a href="https://leafletjs.com/reference.html" target="_blank">https://leafletjs.com/reference.html</a></li>
+          <li>JSON Web Tokens Security Standards: <a href="https://jwt.io/introduction" target="_blank">https://jwt.io/introduction</a></li>
+          <li>MDN Web Docs Geolocation APIs: <a href="https://developer.mozilla.org/" target="_blank">https://developer.mozilla.org/</a></li>
+        </ol>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Mermaid.js for diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>
+    // Initialize theme based on localStorage
+    (function initTheme() {
+      const savedTheme = localStorage.getItem('skypulse_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeToggleIcon();
+      
+      // Initialize Mermaid with matching theme
+      mermaid.initialize({ 
+        startOnLoad: true, 
+        theme: savedTheme === 'dark' ? 'dark' : 'default',
+        securityLevel: 'loose'
+      });
+    })();
+
+    // Sidebar navigation highlight on scroll
+    document.addEventListener('DOMContentLoaded', () => {
+      const sections = document.querySelectorAll('.report-section, header');
+      const tocItems = document.querySelectorAll('.toc-item');
+
+      window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.clientHeight;
+          if (pageYOffset >= (sectionTop - 150)) {
+            current = section.getAttribute('id');
+          }
+        });
+
+        tocItems.forEach(item => {
+          item.classList.remove('active');
+          if (item.getAttribute('data-target') === current) {
+            item.classList.add('active');
+          }
+        });
+      });
+    });
+
+    // Toggle theme switcher
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('skypulse_theme', newTheme);
+      updateThemeToggleIcon();
+
+      // Refresh page to re-render Mermaid correctly under new theme
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    }
+
+    function updateThemeToggleIcon() {
+      const toggleBtn = document.getElementById('themeToggle');
+      if (!toggleBtn) return;
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      toggleBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+    }
+  </script>
+</body>
+</html>
